@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -9,8 +10,12 @@ public class Weapon : MonoBehaviour
     {
         if (_bullets > 0)
         {
-            player.GetDamage(_damage);
+            player.TakeDamage(_damage);
             _bullets -= 1;
+        }
+        else
+        {
+            throw new InvalidOperationException();
         }
     }
 }
@@ -19,15 +24,22 @@ public class Player : MonoBehaviour
 {
     private int _health;
 
-    public void GetDamage(int damage)
+    public void TakeDamage(int damage)
     {
-        if (_health > damage)
+        if (damage > 0)
         {
-            _health -= damage;
+            if (_health > damage)
+            {
+                _health -= damage;
+            }
+            else
+            {
+                _health = 0;
+            }
         }
         else
         {
-            _health = 0;
+            throw new ArgumentOutOfRangeException();
         }
     }
 }
