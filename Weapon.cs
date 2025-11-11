@@ -1,28 +1,46 @@
 using System;
-using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Weapon 
 {
     private int _damage;
     private int _bullets;
+    private int _countOfBullets = 1;
+
+    public Weapon()
+    {
+        _damage = 5;
+        _bullets = 10;
+    }
 
     public void Fire(Player player)
     {
-        if (_bullets > 0)
+        if (player != null)
         {
-            player.TakeDamage(_damage);
-            _bullets -= 1;
+            if (_bullets > 0)
+            {
+                player.TakeDamage(_damage);
+                _bullets -= _countOfBullets;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         else
         {
-            throw new InvalidOperationException();
+            throw new ArgumentNullException();
         }
     }
 }
 
-public class Player : MonoBehaviour
+public class Player 
 {
     private int _health;
+
+    public Player()
+    {
+        _health = 30;
+    }
 
     public void TakeDamage(int damage)
     {
@@ -44,12 +62,24 @@ public class Player : MonoBehaviour
     }
 }
 
-public class Bot : MonoBehaviour
+public class Bot 
 {
-    private Weapon _weapon;
+    private readonly Weapon _weapon;
+
+    public Bot()
+    {
+        _weapon = new Weapon();
+    }
 
     public void OnSeePlayer(Player player)
     {
-        _weapon.Fire(player);
+        if (player != null)
+        {
+            _weapon.Fire(player);
+        }
+        else
+        {
+            throw new ArgumentNullException();
+        }
     }
 }
