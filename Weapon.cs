@@ -14,22 +14,14 @@ public class Weapon
 
     public void Fire(Player player)
     {
-        if (player != null)
-        {
-            if (_bullets > 0)
-            {
-                player.TakeDamage(_damage);
-                _bullets -= _countOfBullets;
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-        }
-        else
-        {
+        if (player == null)
             throw new ArgumentNullException();
-        }
+
+        if (_bullets <= 0)
+                throw new InvalidOperationException();
+
+        player.TakeDamage(_damage);
+        _bullets -= _countOfBullets;
     }
 }
 
@@ -44,20 +36,16 @@ public class Player
 
     public void TakeDamage(int damage)
     {
-        if (damage > 0)
+        if (damage <= 0)
+            throw new ArgumentOutOfRangeException();
+
+        if (_health > damage)
         {
-            if (_health > damage)
-            {
-                _health -= damage;
-            }
-            else
-            {
-                _health = 0;
-            }
+           _health -= damage;
         }
         else
         {
-            throw new ArgumentOutOfRangeException();
+            _health = 0;
         }
     }
 }
@@ -73,13 +61,9 @@ public class Bot
 
     public void OnSeePlayer(Player player)
     {
-        if (player != null)
-        {
-            _weapon.Fire(player);
-        }
-        else
-        {
+        if (player == null)
             throw new ArgumentNullException();
-        }
+
+        _weapon.Fire(player);    
     }
 }
